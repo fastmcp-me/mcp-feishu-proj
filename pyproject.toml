@@ -1,6 +1,6 @@
 [project]
 name = "mcp-feishu-proj"
-version = "0.1.1"
+version = "0.1.2"
 description = "基于MCP协议的飞书项目管理工具"
 readme = "README.md"
 requires-python = ">=3.10"

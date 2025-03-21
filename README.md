@@ -6,7 +6,36 @@
 
 本项目是一个MCP服务器实现，它封装了飞书项目管理的Open API，使AI助手能够获取飞书项目的视图列表、视图详情等信息。通过这个工具，AI助手可以帮助用户管理和查询飞书项目中的工作项。
 
-## 功能列表
+## 使用方法
+
+在支持MCP协议的客户端（如[Claude桌面客户端](https://claude.ai/download),[Cursor](https://www.cursor.com/),[Cline](https://github.com/cline/cline)等）的配置文件中添加本服务器。
+
+> 更多MCP客户端可参考：https://modelcontextprotocol.io/clients
+
+以Claude桌面客户端为例，编辑`claude_desktop_config.json`文件:
+- macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+- Windows: %APPDATA%\Claude\claude_desktop_config.json
+
+在`mcpServers`字段中添加以下配置：
+
+```json
+{
+  "mcpServers": {
+    "feishuproj": {
+      "command": "uvx",
+      "args": ["mcp-feishu-proj","--transport", "stdio"],
+      "env": {
+        "FS_PROJ_PROJECT_KEY": "your_project_key",
+        "FS_PROJ_USER_KEY": "your_user_key",
+        "FS_PROJ_PLUGIN_ID": "your_plugin_id",
+        "FS_PROJ_PLUGIN_SECRET": "your_plugin_secret"
+      }
+    }
+  }
+}
+```
+
+## 已支持功能([欢迎贡献](#贡献指南))
 
 ### 登录认证
 - [x] 登录及认证流程
@@ -108,11 +137,14 @@
 - [ ] 获取流程角色配置详情
 
 
-## 安装要求
+## API文档
 
-- Python 3.10 或更高版本
-- 飞书项目管理系统的访问权限
-- 飞书项目Open API的插件ID和密钥
+本项目包含了飞书项目Open API的Postman集合，位于`docs/open-api-postman`目录下：
+
+- `开放能力环境变量.postman_environment.json`：Postman环境变量配置
+- `开放能力open-api接口.postman_collection.json`：Postman API集合
+
+## 开发指南
 
 ## 开发环境配置
 
@@ -157,56 +189,6 @@ FS_PROJ_PLUGIN_SECRET=your_plugin_secret
 - `FS_PROJ_USER_KEY`：用户标识
 - `FS_PROJ_PLUGIN_ID`：飞书项目Open API的插件ID
 - `FS_PROJ_PLUGIN_SECRET`：飞书项目Open API的插件密钥
-
-## 使用方法
-
-在支持MCP的客户端配置中添加本服务器：
-
-```json
-{
-  "mcpServers": {
-    "feishuproj": {
-      "command": "uvx",
-      "args": ["mcp-feishu-proj","--transport", "stdio"],
-      "env": {
-        "FS_PROJ_PROJECT_KEY": "your_project_key",
-        "FS_PROJ_USER_KEY": "your_user_key",
-        "FS_PROJ_PLUGIN_ID": "your_plugin_id",
-        "FS_PROJ_PLUGIN_SECRET": "your_plugin_secret"
-      }
-    }
-  }
-}
-```
-
-## API文档
-
-本项目包含了飞书项目Open API的Postman集合，位于`docs/open-api-postman`目录下：
-
-- `开放能力环境变量.postman_environment.json`：Postman环境变量配置
-- `开放能力open-api接口.postman_collection.json`：Postman API集合
-
-## 开发指南
-
-### 项目结构
-
-```
-mcp-feishu-proj/
-├── .env.example           # 环境变量示例文件
-├── .gitignore             # Git忽略文件
-├── .python-version        # Python版本配置
-├── pyproject.toml         # Python项目配置
-├── uv.lock                # 依赖锁定文件
-├── docs/                  # 文档目录
-│   └── open-api-postman/  # Postman集合
-│       ├── postman_environment.json
-│       └── postman_collection.json
-└── src/                   # 源代码目录
-    └── mcp_server/        # MCP服务器实现
-        ├── __init__.py    # 包初始化文件
-        ├── fsprojclient.py # 飞书项目客户端
-        └── server.py      # MCP服务器
-```
 
 ### 添加新功能
 

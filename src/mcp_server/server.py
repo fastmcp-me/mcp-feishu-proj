@@ -40,7 +40,7 @@ client = FSProjClient(
 def get_view_list(work_item_type_key: Literal["story","version","issue"]):
     """获取飞书项目视图列表
     Args:
-        work_item_type_key: 工作项类型"
+        work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
     """    
     client.get_plugin_token()
     return client.get_view_list(work_item_type_key)
