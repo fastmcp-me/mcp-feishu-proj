@@ -114,7 +114,7 @@
 - 飞书项目管理系统的访问权限
 - 飞书项目Open API的插件ID和密钥
 
-## 安装方法
+## 开发环境配置
 
 1. 克隆本仓库：
 
@@ -123,10 +123,14 @@ git clone https://github.com/yourusername/mcp-feishu-proj.git
 cd mcp-feishu-proj
 ```
 
-2. 安装依赖：
+2. 安装依赖（使用uv）：
 
 ```bash
-pip install -e .
+# 安装uv（如果尚未安装）
+pip install uv
+# 创建虚拟环境并安装依赖
+uv venv
+uv pip install -e .
 ```
 
 ## 配置说明
@@ -162,8 +166,8 @@ FS_PROJ_PLUGIN_SECRET=your_plugin_secret
 {
   "mcpServers": {
     "feishuproj": {
-      "command": "mcp-feishu-proj",
-      "args": ["--transport", "stdio"],
+      "command": "uvx",
+      "args": ["mcp-feishu-proj","--transport", "stdio"],
       "env": {
         "FS_PROJ_PROJECT_KEY": "your_project_key",
         "FS_PROJ_USER_KEY": "your_user_key",
