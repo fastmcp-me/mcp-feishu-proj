@@ -45,9 +45,13 @@ def get_view_list(work_item_type_key: Literal["story","version","issue"]):
     client.get_plugin_token()
     return client.get_view_list(work_item_type_key)
 
-def test():
-    view_list = get_view_list("story")
-    print(view_list)
-
-if __name__ == "__main__":
-    test()
+@mcp.tool("get_view_detail")
+def get_view_detail(view_id: str, page_num: int = 1, page_size: int = 20):
+    """获取飞书项目视图工作项列表
+    Args:
+        view_id: 视图标识
+        page_num: 页码，默认为1
+        page_size: 每页数量，默认为20
+    """
+    client.get_plugin_token()
+    return client.get_view_detail(view_id, page_num, page_size)
