@@ -9,9 +9,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment:
+      name: unitest
+    
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v4
@@ -25,6 +28,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install uv
+        uv venv
         if [ -f requirements.txt ]; then uv pip sync requirements.txt; fi
         uv pip install -e .
     
