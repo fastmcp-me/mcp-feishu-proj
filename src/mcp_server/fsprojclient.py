@@ -342,3 +342,24 @@ class FSProjClient:
         if err_code != 0:
             raise Exception(f"获取工作项详情失败，错误码: {err_code}, 错误信息: {response.get('err_msg')}")
         return response.get("data", {})
+    
+
+    def get_work_item_type_meta(self, work_item_type_key: WorkItemType) -> Dict:
+        """获取工作项类型元数据
+        
+        - 在工作项详情的"fields"字段中各个字段的具体意义及信息可以在工作项类型元数据中获取
+
+        Args:
+            work_item_type_key: 工作项类型标识
+            
+        Returns:
+            工作项类型元数据
+        """
+        response = self._request(
+            "GET", 
+            f"/open_api/{self.project_key}/work_item/{work_item_type_key}/meta"
+        )
+        err_code = response.get("code", 0)
+        if err_code != 0:
+            raise Exception(f"获取工作项类型元数据失败，错误码: {err_code}, 错误信息: {response.get('err_msg')}")
+        return response.get("data", {})

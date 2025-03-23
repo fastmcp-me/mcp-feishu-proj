@@ -66,3 +66,12 @@ def get_work_item_detail(work_item_type_key: WorkItemType, work_item_ids: str):
     client.get_plugin_token()
     id_list = [int(id.strip()) for id in work_item_ids.split(",")]
     return client.get_workitem_detail(work_item_type_key, id_list)
+
+@mcp.tool("get_work_item_type_meta")
+def get_work_item_type_meta(work_item_type_key: WorkItemType):
+    """获取飞书项目工作项类型元数据
+    Args:
+        work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
+    """
+    client.get_plugin_token()
+    return client.get_work_item_type_meta(work_item_type_key)

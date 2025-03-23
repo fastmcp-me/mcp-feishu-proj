@@ -7,7 +7,7 @@
 
 import unittest
 # 使用绝对导入而不是相对导入，以便在 unittest discover 时正确导入
-from src.mcp_server.server import get_view_list, get_view_detail, get_work_item_detail
+from src.mcp_server.server import get_view_list, get_view_detail, get_work_item_detail, get_work_item_type_meta
 
 class TestFSProjMCPServer(unittest.TestCase):
     """测试飞书项目MCP服务器工具函数"""
@@ -107,6 +107,44 @@ class TestFSProjMCPServer(unittest.TestCase):
             print(f"获取到工作项详情，共 {len(work_item_details)} 个工作项")
         except Exception as e:
             self.fail(f"测试 get_work_item_detail 失败: {str(e)}")
+    
+    def test_get_work_item_type_meta(self):
+        """测试获取工作项类型元数据功能"""
+        print("\n===== 测试 get_work_item_type_meta =====")
+        try:
+            # 测试获取需求类型的元数据
+            work_item_type_meta = get_work_item_type_meta("story")
+            self.assertIsNotNone(work_item_type_meta, "工作项类型元数据不应为None")
+            
+            # 验证元数据是一个列表
+            self.assertIsInstance(work_item_type_meta, list, "工作项类型元数据应为列表类型")
+            self.assertTrue(len(work_item_type_meta) > 0, "工作项类型元数据列表不应为空")
+            
+            # 验证列表中的元素包含必要的字段
+            first_field = work_item_type_meta[0]
+            self.assertIsInstance(first_field, dict, "字段元素应为字典类型")
+            self.assertIn("field_name", first_field, "字段元素中应包含field_name")
+            self.assertIn("field_key", first_field, "字段元素中应包含field_key")
+            
+            print(f"获取到工作项类型元数据，包含 {len(work_item_type_meta)} 个字段")
+            
+            # 测试获取缺陷类型的元数据
+            issue_meta = get_work_item_type_meta("issue")
+            self.assertIsNotNone(issue_meta, "缺陷类型元数据不应为None")
+            self.assertIsInstance(issue_meta, list, "缺陷类型元数据应为列表类型")
+            self.assertTrue(len(issue_meta) > 0, "缺陷类型元数据列表不应为空")
+            
+            print(f"获取到缺陷类型元数据，包含 {len(issue_meta)} 个字段")
+            
+            # 测试获取版本类型的元数据
+            version_meta = get_work_item_type_meta("version")
+            self.assertIsNotNone(version_meta, "版本类型元数据不应为None")
+            self.assertIsInstance(version_meta, list, "版本类型元数据应为列表类型")
+            self.assertTrue(len(version_meta) > 0, "版本类型元数据列表不应为空")
+            
+            print(f"获取到版本类型元数据，包含 {len(version_meta)} 个字段")
+        except Exception as e:
+            self.fail(f"测试 get_work_item_type_meta 失败: {str(e)}")
 
 if __name__ == "__main__":
     unittest.main()
