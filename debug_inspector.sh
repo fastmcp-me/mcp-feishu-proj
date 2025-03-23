@@ -27,4 +27,4 @@ npx -y @modelcontextprotocol/inspector \
         -e FS_PROJ_USER_KEY="$FS_PROJ_USER_KEY" \
         -e FS_PROJ_PLUGIN_ID="$FS_PROJ_PLUGIN_ID" \
         -e FS_PROJ_PLUGIN_SECRET="$FS_PROJ_PLUGIN_SECRET" \
-        uvx mcp-feishu-proj@latest
+        uvx ./
