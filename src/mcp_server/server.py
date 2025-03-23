@@ -70,6 +70,7 @@ def get_work_item_detail(work_item_type_key: WorkItemType, work_item_ids: str):
 @mcp.tool("get_work_item_type_meta")
 def get_work_item_type_meta(work_item_type_key: WorkItemType):
     """获取飞书项目工作项类型元数据
+    - 在工作项详情的"fields"字段中各个字段的具体意义及信息可以在工作项类型元数据中获取
     Args:
         work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
     """
