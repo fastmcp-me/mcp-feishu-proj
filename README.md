@@ -23,7 +23,7 @@
   "mcpServers": {
     "feishuproj": {
       "command": "uvx",
-      "args": ["mcp-feishu-proj","--transport", "stdio"],
+      "args": ["mcp-feishu-proj@latest","--transport", "stdio"],
       "env": {
         "FS_PROJ_PROJECT_KEY": "your_project_key",
         "FS_PROJ_USER_KEY": "your_user_key",

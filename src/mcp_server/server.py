@@ -1,5 +1,5 @@
 from mcp.server.fastmcp import FastMCP
-from .fsprojclient import FSProjClient
+from .fsprojclient import FSProjClient, WorkItemType
 from typing import Literal
 import os
 import sys
@@ -37,7 +37,7 @@ client = FSProjClient(
 )
 
 @mcp.tool("get_view_list")
-def get_view_list(work_item_type_key: Literal["story","version","issue"]):
+def get_view_list(work_item_type_key: WorkItemType):
     """获取飞书项目视图列表
     Args:
         work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
@@ -55,3 +55,14 @@ def get_view_detail(view_id: str, page_num: int = 1, page_size: int = 20):
     """
     client.get_plugin_token()
     return client.get_view_detail(view_id, page_num, page_size)
+
+@mcp.tool("get_work_item_detail")
+def get_work_item_detail(work_item_type_key: WorkItemType, work_item_ids: str):
+    """获取飞书项目工作项详情
+    Args:
+        work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
+        work_item_ids: 工作项ID，多个ID之间用逗号分隔
+    """
+    client.get_plugin_token()
+    id_list = [int(id.strip()) for id in work_item_ids.split(",")]
+    return client.get_workitem_detail(work_item_type_key, id_list)

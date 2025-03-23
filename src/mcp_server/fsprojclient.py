@@ -12,7 +12,8 @@ import time
 import requests
 from typing import Dict, List, Union, Optional, Any, Tuple, Literal
 
-
+# Define custom type for work item types
+WorkItemType = Literal["story", "version", "issue"]
 class FSProjClient:
     """飞书项目Open API客户端"""
 
@@ -266,20 +267,24 @@ class FSProjClient:
         }
     
     # ===== 视图相关 =====
-    def get_view_list(self, work_item_type_key: Literal["story","version","issue"], created_by: str = "", page_num: int = 1, page_size: int = 100) -> List[Dict]:
+    def get_view_list(self, work_item_type_key: WorkItemType, created_by: str = "", page_num: int = 1, page_size: int = 100) -> Dict:
         """获取视图列表及配置信息
         
         Args:
             work_item_type_key: 工作项类型标识
             created_by: 创建者标识
+            page_num: 页码
+            page_size: 每页数量
             
+        Returns:
+            视图列表及配置信息
         """
         
         data = {
             "work_item_type_key": work_item_type_key,
             "page_num": page_num,
             "page_size": page_size,
-            "created_by": ""
+            "created_by": created_by
         }
         response = self._request(
             "POST", 
@@ -313,4 +318,27 @@ class FSProjClient:
         err_code = response.get("code", 0)
         if err_code != 0:
             raise Exception(f"获取视图工作项列表失败，错误码: {err_code}, 错误信息: {response.get('err_msg')}")
+        return response.get("data", {})
+    
+
+    # ===== 工作项相关 =====
+    def get_workitem_detail(self, work_item_type_key: WorkItemType, work_item_ids: List[int]) -> List[Dict]:
+        """获取工作项详情
+        
+        Args:
+            work_item_type_key: 工作项类型标识
+            
+        """
+        data = {
+            "work_item_ids": work_item_ids
+        }
+        
+        response = self._request(
+            "POST", 
+            f"/open_api/{self.project_key}/work_item/{work_item_type_key}/query",
+            json_data=data
+        )
+        err_code = response.get("code", 0)
+        if err_code != 0:
+            raise Exception(f"获取工作项详情失败，错误码: {err_code}, 错误信息: {response.get('err_msg')}")
         return response.get("data", {})
