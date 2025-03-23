@@ -137,12 +137,7 @@
 - [ ] 获取流程角色配置详情
 
 
-## API文档
 
-本项目包含了飞书项目Open API的Postman集合，位于`docs/open-api-postman`目录下：
-
-- `开放能力环境变量.postman_environment.json`：Postman环境变量配置
-- `开放能力open-api接口.postman_collection.json`：Postman API集合
 
 ## 开发指南
 
@@ -196,6 +191,14 @@ FS_PROJ_PLUGIN_SECRET=your_plugin_secret
 
 1. 在`fsprojclient.py`中添加新的API方法
 2. 在`server.py`中使用`@mcp.tool`装饰器注册新的MCP工具
+
+
+### 飞书项目Open API参考
+
+本项目包含了飞书项目Open API的Postman集合，位于`docs/open-api-postman`目录下，将目录下文件导入Postman可以进行快速调试飞书项目接口：
+
+- `postman_environment.json`：Postman环境变量配置
+- `postman_collection.json`：Postman API集合
 
 ## 贡献指南
 
