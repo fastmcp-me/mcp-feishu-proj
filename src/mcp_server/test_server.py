@@ -100,9 +100,9 @@ class TestFSProjMCPServer(unittest.TestCase):
             
             # 验证每个工作项的ID与请求的ID一致
             for detail in work_item_details:
-                self.assertIn("work_item_id", detail, "工作项详情中应包含work_item_id字段")
-                self.assertIn(str(detail["work_item_id"]), work_item_ids, 
-                             f"返回的工作项ID {detail['work_item_id']} 应在请求的ID列表中")
+                self.assertIn("id", detail, "工作项详情中应包含id字段")
+                self.assertIn(str(detail["id"]), work_item_ids, 
+                             f"返回的工作项ID {detail['id']} 应在请求的ID列表中")
             
             print(f"获取到工作项详情，共 {len(work_item_details)} 个工作项")
         except Exception as e:
