@@ -22,6 +22,23 @@ echo "FS_PROJ_USER_KEY: $FS_PROJ_USER_KEY"
 echo "FS_PROJ_PLUGIN_ID: $FS_PROJ_PLUGIN_ID"
 echo "FS_PROJ_PLUGIN_SECRET: $FS_PROJ_PLUGIN_SECRET"
 
+# 检查虚拟环境是否存在，如果不存在则创建
+if [ ! -d ".venv" ]; then
+    echo "创建虚拟环境..."
+    # 检查是否安装了 uv
+    if ! command -v uv &> /dev/null; then
+        echo "安装 uv..."
+        pip install uv
+    fi
+    uv venv
+    source .venv/bin/activate
+    echo "安装依赖..."
+    uv pip install -e .
+else
+    echo "激活虚拟环境..."
+    source .venv/bin/activate
+fi
+
 # 执行单元测试
 # 使用 -m 标志从项目根目录运行 unittest discover，以正确处理相对导入
 # 这样可以自动发现所有测试文件
