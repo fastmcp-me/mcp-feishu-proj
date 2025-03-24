@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mcp-feishu-proj
-        image: python:3.9-slim
+        image: python:3.10-slim
         command: ["sh", "-c", "pip install uv && uv tool run mcp-feishu-proj@latest --transport sse"]
         envFrom:
         - configMapRef:
