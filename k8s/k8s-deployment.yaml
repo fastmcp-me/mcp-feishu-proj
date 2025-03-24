@@ -30,19 +30,23 @@ spec:
           requests:
             cpu: "100m"
             memory: "128Mi"
-        # 如果需要健康检查，取消下面的注释
-        # livenessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 8000
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        # readinessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 8000
-        #   initialDelaySeconds: 5
-        #   periodSeconds: 5
+        # 存活探针配置
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        # 就绪探针配置
+        readinessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
 ---
 # 如果需要暴露服务，取消下面的注释
 # apiVersion: v1
