@@ -26,7 +26,9 @@ if missing_vars:
     print("请确保这些环境变量已在.env文件中设置或已在系统环境中定义")
     sys.exit(1)
 
-mcp = FastMCP("feishuproj-mcp-server")
+host = os.getenv("SSE_SERVER_HOST", "0.0.0.0")
+port = int(os.getenv("SSE_SERVER_PORT", "8000"))
+mcp = FastMCP("feishuproj-mcp-server", host=host, port=port)
 
 client = FSProjClient(
     os.getenv("FS_PROJ_BASE_URL", "https://project.feishu.cn/"),

@@ -9,7 +9,9 @@ services:
     env_file:
       - ../.env
     environment:
-      - FS_PROJ_BASE_URL=https://project.feishu.cn/
+      - SSE_SERVER_HOST=${SSE_SERVER_HOST}
+      - SSE_SERVER_PORT=${SSE_SERVER_PORT}
+      - FS_PROJ_BASE_URL=${FS_PROJ_BASE_URL}
       - FS_PROJ_PROJECT_KEY=${FS_PROJ_PROJECT_KEY}
       - FS_PROJ_USER_KEY=${FS_PROJ_USER_KEY}
       - FS_PROJ_PLUGIN_ID=${FS_PROJ_PLUGIN_ID}
