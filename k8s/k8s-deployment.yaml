@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-feishu-proj
+  labels:
+    app: mcp-feishu-proj
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-feishu-proj
+  template:
+    metadata:
+      labels:
+        app: mcp-feishu-proj
+    spec:
+      containers:
+      - name: mcp-feishu-proj
+        image: python:3.9-slim
+        command: ["sh", "-c", "pip install uv && uv tool run mcp-feishu-proj@latest --transport sse"]
+        envFrom:
+        - configMapRef:
+            name: mcp-feishu-proj-config
+        - secretRef:
+            name: mcp-feishu-proj-secret
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        # 如果需要健康检查，取消下面的注释
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+---
+# 如果需要暴露服务，取消下面的注释
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mcp-feishu-proj
+# spec:
+#   selector:
+#     app: mcp-feishu-proj
+#   ports:
+#   - port: 8000
+#     targetPort: 8000
+#   type: ClusterIP

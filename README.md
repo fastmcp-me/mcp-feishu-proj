@@ -200,6 +200,116 @@ FS_PROJ_PLUGIN_SECRET=your_plugin_secret
 - `postman_environment.json`：Postman环境变量配置
 - `postman_collection.json`：Postman API集合
 
+
+## 容器化部署指南
+
+### Docker部署
+
+本项目提供了Docker部署支持，可以通过Docker容器运行MCP飞书项目服务。
+
+#### 前提条件
+
+- 安装 [Docker](https://docs.docker.com/get-docker/)
+- 安装 [Docker Compose](https://docs.docker.com/compose/install/)
+
+#### 使用Docker Compose运行
+
+1. 创建`.env`文件，设置必要的环境变量
+
+```bash
+cp .env.example .env
+```
+
+然后编辑`.env`文件，填入你的飞书项目相关信息：
+
+```
+FS_PROJ_BASE_URL=https://project.feishu.cn/
+FS_PROJ_PROJECT_KEY=your_project_key
+FS_PROJ_USER_KEY=your_user_key
+FS_PROJ_PLUGIN_ID=your_plugin_id
+FS_PROJ_PLUGIN_SECRET=your_plugin_secret
+```
+
+2. 使用Docker Compose启动服务
+
+```bash
+docker-compose -f docker/docker-compose.yml up -d
+```
+
+这将使用`ghcr.io/astral-sh/uv`镜像，并挂载项目根目录到容器中，直接运行本地代码，便于开发和调试。Docker Compose会自动加载项目根目录中的`.env`文件作为环境变量。
+
+3. 查看日志
+
+```bash
+docker-compose -f docker/docker-compose.yml logs -f
+```
+
+4. 停止服务
+
+```bash
+docker-compose -f docker/docker-compose.yml down
+```
+
+更多详细信息请参阅[Docker部署文档](docker/docker-README.md)。
+
+### Kubernetes部署
+
+#### 前提条件
+
+- 一个可用的Kubernetes集群
+- 已安装kubectl命令行工具
+- 具有创建Deployment、ConfigMap和Secret的权限
+
+#### 部署步骤
+
+1. 准备Secret
+
+首先，需要创建包含敏感信息的Secret。由于Kubernetes Secret需要使用base64编码的值，您需要对敏感信息进行编码：
+
+```bash
+# 对敏感信息进行base64编码
+echo -n "your_project_key" | base64
+echo -n "your_user_key" | base64
+echo -n "your_plugin_id" | base64
+echo -n "your_plugin_secret" | base64
+```
+
+然后，使用生成的base64编码值更新`k8s-secret.yaml`文件中的相应字段。
+
+2. 应用配置
+
+依次应用以下配置文件：
+
+```bash
+# 创建ConfigMap
+kubectl apply -f k8s-configmap.yaml
+
+# 创建Secret
+kubectl apply -f k8s-secret.yaml
+
+# 创建Deployment
+kubectl apply -f k8s-deployment.yaml
+```
+
+3. 验证部署
+
+检查部署状态：
+
+```bash
+# 查看Deployment状态
+kubectl get deployments
+
+# 查看Pod状态
+kubectl get pods
+
+# 查看Pod日志
+kubectl logs -f <pod-name>
+```
+
+更多详细信息请参阅[Kubernetes部署文档](k8s/k8s-README.md)。
+
+
+
 ## 贡献指南
 
 欢迎贡献代码、报告问题或提出改进建议。请遵循以下步骤：
@@ -213,3 +323,4 @@ FS_PROJ_PLUGIN_SECRET=your_plugin_secret
 ## 许可证
 
 本项目采用MIT许可证。详情请参阅[LICENSE](LICENSE)文件。
+

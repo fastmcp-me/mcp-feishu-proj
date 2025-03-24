@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  mcp-feishu-proj:
+    image: python:3.9-slim  # 或其他包含基本shell工具的镜像
+    command: sh -c "pip install uv && uv tool run /app --transport sse"
+    volumes:
+      - ../:/app
+    env_file:
+      - ../.env
+    environment:
+      - FS_PROJ_BASE_URL=https://project.feishu.cn/
+      - FS_PROJ_PROJECT_KEY=${FS_PROJ_PROJECT_KEY}
+      - FS_PROJ_USER_KEY=${FS_PROJ_USER_KEY}
+      - FS_PROJ_PLUGIN_ID=${FS_PROJ_PLUGIN_ID}
+      - FS_PROJ_PLUGIN_SECRET=${FS_PROJ_PLUGIN_SECRET}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
