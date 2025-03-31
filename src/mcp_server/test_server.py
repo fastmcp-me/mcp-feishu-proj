@@ -7,7 +7,7 @@
 
 import unittest
 # 使用绝对导入而不是相对导入，以便在 unittest discover 时正确导入
-from src.mcp_server.server import get_view_list, get_view_detail, get_work_item_detail, get_work_item_type_meta
+from src.mcp_server.server import get_view_list, get_view_detail, get_view_detail_by_name, get_work_item_detail, get_work_item_type_meta
 
 class TestFSProjMCPServer(unittest.TestCase):
     """测试飞书项目MCP服务器工具函数"""
@@ -107,6 +107,53 @@ class TestFSProjMCPServer(unittest.TestCase):
             print(f"获取到工作项详情，共 {len(work_item_details)} 个工作项")
         except Exception as e:
             self.fail(f"测试 get_work_item_detail 失败: {str(e)}")
+    
+    def test_get_view_detail_by_name(self):
+        """测试通过视图名称获取视图详情功能"""
+        print("\n===== 测试 get_view_detail_by_name =====")
+        try:
+            # 首先获取视图列表
+            work_item_type = "story"
+            view_list = get_view_list(work_item_type)
+            self.assertIsNotNone(view_list, "视图列表不应为None")
+            self.assertTrue(len(view_list) > 0, "视图列表不应为空")
+            
+            # 获取第一个视图的名称
+            first_view = view_list[0]
+            self.assertIn("name", first_view, "视图对象中应包含name字段")
+            first_view_name = first_view["name"]
+            first_view_id = first_view["view_id"]
+            print(f"使用视图名称: {first_view_name}, 对应ID: {first_view_id}")
+            
+            # 使用视图名称获取视图详情
+            view_detail_by_name = get_view_detail_by_name(first_view_name, work_item_type)
+            self.assertIsNotNone(view_detail_by_name, "通过名称获取的视图详情不应为None")
+            
+            # 直接使用视图ID获取视图详情，用于比较
+            view_detail_by_id = get_view_detail(first_view_id)
+            self.assertIsNotNone(view_detail_by_id, "通过ID获取的视图详情不应为None")
+            
+            # 验证两种方式获取的视图详情是否一致
+            self.assertEqual(view_detail_by_name.get("view_id"), view_detail_by_id.get("view_id"), 
+                            "通过名称和ID获取的视图ID应一致")
+            
+            print(f"通过名称获取到视图详情: {view_detail_by_name}")
+            
+            # 测试不存在的视图名称
+            non_existent_view_name = "不存在的视图名称" + str(hash(first_view_name))
+            empty_view_detail = get_view_detail_by_name(non_existent_view_name, work_item_type)
+            self.assertEqual(empty_view_detail, {}, "对于不存在的视图名称，应返回空字典")
+            print(f"测试不存在的视图名称: {non_existent_view_name}, 返回: {empty_view_detail}")
+            
+            # 测试分页参数
+            page_num = 1
+            page_size = 5
+            paged_view_detail = get_view_detail_by_name(first_view_name, work_item_type, page_num, page_size)
+            self.assertIsNotNone(paged_view_detail, "带分页参数的视图详情不应为None")
+            print(f"使用分页参数 (page_num={page_num}, page_size={page_size}) 获取视图详情成功")
+            
+        except Exception as e:
+            self.fail(f"测试 get_view_detail_by_name 失败: {str(e)}")
     
     def test_get_work_item_type_meta(self):
         """测试获取工作项类型元数据功能"""

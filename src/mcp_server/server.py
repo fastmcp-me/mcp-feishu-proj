@@ -40,7 +40,7 @@ client = FSProjClient(
 
 @mcp.tool("get_view_list")
 def get_view_list(work_item_type_key: WorkItemType):
-    """获取飞书项目视图列表
+    """获取当前飞书项目下的某一类型工作项的所有视图列表
     Args:
         work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
     """    
@@ -49,18 +49,39 @@ def get_view_list(work_item_type_key: WorkItemType):
 
 @mcp.tool("get_view_detail")
 def get_view_detail(view_id: str, page_num: int = 1, page_size: int = 20):
-    """获取飞书项目视图工作项列表
+    """根据视图id获取指定视图下的工作项列表
     Args:
-        view_id: 视图标识
+        view_id: 视图标识id
         page_num: 页码，默认为1
         page_size: 每页数量，默认为20
     """
     client.get_plugin_token()
     return client.get_view_detail(view_id, page_num, page_size)
 
+@mcp.tool("get_view_detail_by_name")
+def get_view_detail_by_name(view_name: str, work_item_type_key: WorkItemType, page_num: int = 1, page_size: int = 20):
+    """根据视图名称获取指定视图下的工作项列表
+    Args:
+        view_name: 视图名称
+        work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
+        page_num: 页码，默认为1
+        page_size: 每页数量，默认为20
+    """
+    client.get_plugin_token()
+    # 获取所有视图列表
+    view_list = client.get_view_list(work_item_type_key)
+    # 查找指定名称的视图
+    view = next((v for v in view_list if v["name"] == view_name), None)
+    if view:
+        # 如果找到视图，获取其ID
+        view_id = view["view_id"]
+        return client.get_view_detail(view_id, page_num, page_size)
+    else:
+        return {}
+
 @mcp.tool("get_work_item_detail")
 def get_work_item_detail(work_item_type_key: WorkItemType, work_item_ids: str):
-    """获取飞书项目工作项详情
+    """获取指定工作项的详情信息
     Args:
         work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
         work_item_ids: 工作项ID，多个ID之间用逗号分隔
@@ -71,7 +92,7 @@ def get_work_item_detail(work_item_type_key: WorkItemType, work_item_ids: str):
 
 @mcp.tool("get_work_item_type_meta")
 def get_work_item_type_meta(work_item_type_key: WorkItemType):
-    """获取飞书项目工作项类型元数据
+    """获取工作项类型元数据
     - 在工作项详情的"fields"字段中各个字段的具体意义及信息可以在工作项类型元数据中获取
     Args:
         work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
