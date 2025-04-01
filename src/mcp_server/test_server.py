@@ -7,7 +7,7 @@
 
 import unittest
 # 使用绝对导入而不是相对导入，以便在 unittest discover 时正确导入
-from src.mcp_server.server import get_view_list, get_view_detail, get_view_detail_by_name, get_work_item_detail, get_work_item_type_meta
+from src.mcp_server.server import get_view_list, get_view_detail, get_view_detail_by_name, get_work_item_detail, get_work_item_type_meta, get_flow_roles
 
 class TestFSProjMCPServer(unittest.TestCase):
     """测试飞书项目MCP服务器工具函数"""
@@ -192,6 +192,66 @@ class TestFSProjMCPServer(unittest.TestCase):
             print(f"获取到版本类型元数据，包含 {len(version_meta)} 个字段")
         except Exception as e:
             self.fail(f"测试 get_work_item_type_meta 失败: {str(e)}")
+    
+    def test_get_flow_roles(self):
+        """测试获取流程角色配置详情功能"""
+        print("\n===== 测试 get_flow_roles =====")
+        try:
+            # 测试获取需求类型的流程角色配置
+            flow_roles = get_flow_roles("story")
+            self.assertIsNotNone(flow_roles, "流程角色配置详情不应为None")
+            
+            # 验证返回的数据结构
+            if isinstance(flow_roles, list):
+                # 如果返回的是列表，验证列表不为空
+                self.assertTrue(len(flow_roles) > 0, "流程角色配置列表不应为空")
+                
+                # 验证列表中的元素包含必要的字段
+                first_role = flow_roles[0]
+                self.assertIsInstance(first_role, dict, "角色元素应为字典类型")
+                self.assertIn("id", first_role, "角色元素中应包含id字段")
+                self.assertIn("name", first_role, "角色元素中应包含name字段")
+                
+                # 打印角色信息
+                print(f"获取到流程角色配置，共 {len(flow_roles)} 个角色")
+                for role in flow_roles:
+                    role_name = role.get("name", "未知角色")
+                    role_id = role.get("id", "未知ID")
+                    print(f"角色: {role_name}, ID: {role_id}")
+                    
+                # 检查一些常见的角色ID是否存在
+                role_ids = [role.get("id") for role in flow_roles]
+                expected_ids = ["plan", "QA", "frontend", "backend"]
+                for expected_id in expected_ids:
+                    if expected_id in role_ids:
+                        print(f"找到预期的角色ID: {expected_id}")
+                    else:
+                        print(f"未找到预期的角色ID: {expected_id}")
+                
+            elif isinstance(flow_roles, dict):
+                # 如果返回的是字典，打印字典的键
+                print(f"获取到流程角色配置，包含以下键: {', '.join(flow_roles.keys())}")
+                self.fail("流程角色配置应为列表类型，而不是字典类型")
+            else:
+                print(f"获取到流程角色配置，类型: {type(flow_roles)}")
+                self.fail(f"流程角色配置应为列表类型，而不是 {type(flow_roles)}")
+            
+            # 测试获取缺陷类型的流程角色配置
+            issue_flow_roles = get_flow_roles("issue")
+            self.assertIsNotNone(issue_flow_roles, "缺陷类型流程角色配置不应为None")
+            self.assertIsInstance(issue_flow_roles, list, "缺陷类型流程角色配置应为列表类型")
+            self.assertTrue(len(issue_flow_roles) > 0, "缺陷类型流程角色配置列表不应为空")
+            print(f"获取到缺陷类型流程角色配置成功，共 {len(issue_flow_roles)} 个角色")
+            
+            # 测试获取版本类型的流程角色配置
+            version_flow_roles = get_flow_roles("version")
+            self.assertIsNotNone(version_flow_roles, "版本类型流程角色配置不应为None")
+            self.assertIsInstance(version_flow_roles, list, "版本类型流程角色配置应为列表类型")
+            self.assertTrue(len(version_flow_roles) > 0, "版本类型流程角色配置列表不应为空")
+            print(f"获取到版本类型流程角色配置成功，共 {len(version_flow_roles)} 个角色")
+            
+        except Exception as e:
+            self.fail(f"测试 get_flow_roles 失败: {str(e)}")
 
 if __name__ == "__main__":
     unittest.main()

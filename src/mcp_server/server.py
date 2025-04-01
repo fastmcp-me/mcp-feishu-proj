@@ -99,3 +99,12 @@ def get_work_item_type_meta(work_item_type_key: WorkItemType):
     """
     client.get_plugin_token()
     return client.get_work_item_type_meta(work_item_type_key)
+
+@mcp.tool("get_flow_roles")
+def get_flow_roles(work_item_type_key: WorkItemType):
+    """获取流程角色配置详情
+    Args:
+        work_item_type_key: 工作项类型，可选值为"story"、"version"、"issue", 分别对应需求、版本、缺陷。
+    """
+    client.get_plugin_token()
+    return client.get_flow_roles(work_item_type_key)
